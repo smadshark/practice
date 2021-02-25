@@ -10,12 +10,14 @@ def register(request):
     if request.method == 'GET':
         return render(request, 'register.html')
     elif request.method == 'POST':
-        username = request.POST['username']
-        user_pw = request.POST['user-pw']
-        check_pw = request.POST['check-pw']
+        username = request.POST.get('username', '')
+        user_pw = request.POST.get('user-pw', '')
+        check_pw = request.POST.get('check-pw', '')
 
         res_data = {}
-        if user_pw != check_pw:
+        if not ( username and user_pw and check_pw ):
+            res_data['error'] = '모든 값을 입력해야합니다.'
+        elif user_pw != check_pw:
             res_data['error'] = '비밀번호가 다릅니다.'
         else:
             user = User(
