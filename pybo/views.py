@@ -1,5 +1,5 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 from .models import Question
 
 
@@ -18,3 +18,14 @@ def detail(request, question_id):
     question_detail_404 = get_object_or_404(Question, pk=question_id)
     context = {'question': question_detail_404}
     return render(request, 'pybo/question_detail.html', context)
+
+
+def answer_create(req, question_id):
+    """
+    pybo 답변 등록
+    """
+    question = get_object_or_404(Question, pk=question_id)
+    print(req)
+    question.answer_set.create(content=req.POST.get('content'),
+                               create_at=timezone.now())
+    return redirect('pybo:detail', question_id=question_id)
